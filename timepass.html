@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>WebSockets</title>
+</head>
+<body>
+  <h1 style="color:red;" id="response-para1">Hello</h1>
+  <h1 style="color:red;" id="response-para2">World</h1>
+
+<script>
+var log1 = document.getElementById("response-para1");
+var log2 = document.getElementById("response-para2");
+// Open a connection
+var socket1 = new WebSocket('ws://localhost:8081');
+var socket2 = new WebSocket('ws://localhost:8082');
+
+// When a connection is made
+socket1.onopen = function() {
+  console.log('Opened connection ');
+
+  // send data to the server
+  var json = JSON.stringify({ message: 'Hello ' });
+  socket1.send(json);
+}
+
+// When data is received
+socket1.onmessage = function(event) {
+  console.log(JSON.parse(event.data).message);
+  log1.style.color = JSON.parse(event.data).message;
+}
+
+// A connection could not be made
+socket1.onerror = function(event) {
+  console.log(event);
+}
+
+// A connection was closed
+socket1.onclose = function(code, reason) {
+  console.log(code, reason);
+}
+
+socket2.onopen = function() {
+  console.log('Opened connection ');
+
+  // send data to the server
+  var json = JSON.stringify({ message: 'Hello ' });
+  socket2.send(json);
+}
+
+// When data is received
+socket2.onmessage = function(event) {
+  console.log(JSON.parse(event.data).message);
+  log2.style.color = JSON.parse(event.data).message;
+}
+
+// A connection could not be made
+socket2.onerror = function(event) {
+  console.log(event);
+}
+
+// A connection was closed
+socket2.onclose = function(code, reason) {
+  console.log(code, reason);
+}
+
+// Close the connection when the window is closed
+window.addEventListener('beforeunload', function() {
+  socket.close();
+});
+</script>
+</body>
+</html>

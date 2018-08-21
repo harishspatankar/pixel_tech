@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>WebSockets</title>
+</head>
+<body>
+  <br>
+  <p style="color:red;" id="response-para1">Hello How are you</p>
+  <script>
+
+  var log1 = document.getElementById("response-para1");
+
+  var socket1 = [];
+
+  for(var i = 0 ; i < 1 ; i++){
+    socket1[i] = new WebSocket("ws://localhost:5001");
+  }
+
+  $(document).ready(function(){
+    for(var i = 0 ; i < 1 ; i++){
+      socket1[i].onmessage = function(event) {
+        console.log(event.data);
+        log1.style.color = event.data.message
+      }
+    }
+  });
+
+</script>
+</body>
+</html>
