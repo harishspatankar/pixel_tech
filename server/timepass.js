@@ -1,4 +1,4 @@
-colors = ["red", "green", "blue", "black", "pink", "black"]
+colors = ["white", "black", "red", "green", "blue", "yellow", "orange", "brown", "pink", "maroon"]
 var WSS = require('ws').Server;
 
 // Start the server
@@ -10,7 +10,7 @@ wss.on('connection', function(socket) {
   console.log('Opened connection ');
 
   // Send data back to the client
-  var json = JSON.stringify({ message: 'Gotcha' });
+  var json = JSON.stringify({ message: 'Hello' });
   socket.send(json);
 
   // When data is received
@@ -28,7 +28,7 @@ wss.on('connection', function(socket) {
 var broadcast = function() {
   // wss.clients is an array of all connected clients
   wss.clients.forEach(function each(client) {
-    colorCode = Math.floor(Math.random() * 5);
+    colorCode = Math.floor(Math.random() * colors.length);
     var color = colors[colorCode]
     var json = JSON.stringify({
       message: color
@@ -40,48 +40,3 @@ var broadcast = function() {
 }
 
 setInterval(broadcast, 500);
-
-
-
-
-// var wss = []
-// var portNumber = 8081;
-// for(var i = 1 ; i < 11 ; i++){
-//   wss[i] = new WSS({ port: portNumber++ });
-//
-//   wss[i].on('connection', function(socket) {
-//     console.log('Opened connection ');
-//
-//     // Send data back to the client
-//     var json = JSON.stringify({ message: 'Gotcha' });
-//     socket.send(json);
-//
-//     // When data is received
-//     socket.on('message', function(message) {
-//       console.log('Received: ' + message);
-//     });
-//
-//     // The connection was closed
-//     socket.on('close', function() {
-//       console.log('Closed Connection ');
-//     });
-//   });
-// }
-//
-// var broadcast = function() {
-//   for(var i = 1 ; i < 11 ; i++){
-//     colorCode = Math.floor(Math.random() * 5);
-//     var color = colors[colorCode]
-//     var json = JSON.stringify({
-//       message: color
-//     });
-//
-//     // wss.clients is an array of all connected clients
-//     wss[i].clients.forEach(function each(client) {
-//       client.send(json);
-//       console.log(json);
-//     });
-//   }
-// }
-//
-// setInterval(broadcast, 500);

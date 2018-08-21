@@ -5,118 +5,53 @@
     <title>WebSockets</title>
 </head>
 <body>
-  <h1 style="color:red;" id="response-para1">Hello</h1>
-  <h1 style="color:red;" id="response-para2">Hello</h1>
+  <p id = "demo"></p>
+  <script>
 
-<script>
-var log1 = document.getElementById("response-para1");
-var log2 = document.getElementById("response-para2");
-// Open a connection
-var socket1 = new WebSocket('ws://localhost:8081');
-var socket2 = new WebSocket('ws://localhost:8081');
+  var heading_ids = [];
+  var sockets = [];
+  function createHeaders(){
+    var headings = "";
+    for(let i = 1 ; i < 257 ; i++){
+      headings = headings + "<h3 id=heading_"+i+">Hello</h3>"
+    }
+    document.getElementById("demo").innerHTML = headings;
+  }
 
-// When a connection is made
-socket1.onopen = function() {
-  console.log('Opened connection ');
+  function setHeadingIds(){
+    for(let i = 1 ; i < 257 ; i++){
+      heading_ids[i] = document.getElementById("heading_"+i);
+      console.log(heading_ids[i]);
+      sockets[i] = new WebSocket('ws://localhost:8081');
+      sockets[i].onopen = function() {
+        console.log('Opened connection ');
 
-  // send data to the server
-  var json = JSON.stringify({ message: 'Hello ' });
-  socket1.send(json);
-}
+        // send data to the server
+        var json = JSON.stringify({ message: 'Hello' });
+        sockets[i].send(json);
+      }
 
-// When data is received
-socket1.onmessage = function(event) {
-  console.log(JSON.parse(event.data).message);
-  log1.style.color = JSON.parse(event.data).message;
+      // When data is received
+      sockets[i].onmessage = function(event) {
+        console.log(JSON.parse(event.data).message);
+        heading_ids[i].style.color = JSON.parse(event.data).message;
+      }
 
-}
+      // A connection could not be made
+      sockets[i].onerror = function(event) {
+        console.log(event);
+      }
 
-// A connection could not be made
-socket1.onerror = function(event) {
-  console.log(event);
-}
+      // A connection was closed
+      sockets[i].onclose = function(code, reason) {
+        console.log(code, reason);
+      }
+    }
+  }
 
-// A connection was closed
-socket1.onclose = function(code, reason) {
-  console.log(code, reason);
-}
+  createHeaders();
+  setHeadingIds();
 
-socket2.onopen = function() {
-  console.log('Opened connection ');
-
-  // send data to the server
-  var json = JSON.stringify({ message: 'Hello ' });
-  socket2.send(json);
-}
-
-// When data is received
-socket2.onmessage = function(event) {
-  console.log(JSON.parse(event.data).message);
-  log2.style.color = JSON.parse(event.data).message;
-}
-
-// A connection could not be made
-socket2.onerror = function(event) {
-  console.log(event);
-}
-
-// A connection was closed
-socket2.onclose = function(code, reason) {
-  console.log(code, reason);
-}
-
-// Close the connection when the window is closed
-window.addEventListener('beforeunload', function() {
-  socket.close();
-});
-</script>
+  </script>
 </body>
 </html>
-
-<!-- <script>
-
-var heading_ids = [];
-var sockets = [];
-var log1 = document.getElementById("response-para1");
-function createHeaders(){
-  var headings = "";
-  for(i = 1 ; i < 11 ; i++){
-    headings = headings + "<h1 id="+i+">Hello</h1>"
-  }
-  document.getElementById("demo").innerHTML = headings;
-}
-
-var portNumber = 8081;
-function setHeadingIds(){
-  for(i = 1 ; i < 11 ; i++){
-    heading_ids[i] = document.getElementById(""+i+"");
-    sockets[i] = new WebSocket('ws://localhost:'+portNumber);
-    portNumber++;
-    sockets[i].onopen = function() {
-      console.log('Opened connection ');
-
-      // send data to the server
-      var json = JSON.stringify({ message: 'Hello' });
-      sockets[i].send(json);
-    }
-
-    // When data is received
-    sockets[i].onmessage = function(event) {
-      console.log(JSON.parse(event.data).message);
-      heading_ids[i].style.color = JSON.parse(event.data).message;
-
-    }
-
-    // A connection could not be made
-    sockets[i].onerror = function(event) {
-      console.log(event);
-    }
-
-    // A connection was closed
-    sockets[i].onclose = function(code, reason) {
-      console.log(code, reason);
-    }
-  }
-}
-
-</script> -->
