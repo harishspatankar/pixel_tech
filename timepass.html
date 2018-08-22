@@ -5,46 +5,53 @@
     <title>WebSockets</title>
 </head>
 <body>
-  <p id = "demo"></p>
+  <p id="demo" class="grid-container"></p>
   <script>
 
   var heading_ids = [];
   var sockets = [];
   function createHeaders(){
     var headings = "";
-    for(let i = 1 ; i < 257 ; i++){
-      headings = headings + "<h3 id=heading_"+i+">Hello</h3>"
+    for(let i = 0 ; i < 16 ; i++){
+      heading_ids[i] = [];
+      for(let j = 0 ; j < 16 ; j++){
+        headings = headings + "<h4 id=heading_"+i+"_"+j+">Hello</h4>"
+      }
     }
     document.getElementById("demo").innerHTML = headings;
   }
 
   function setHeadingIds(){
-    for(let i = 1 ; i < 257 ; i++){
-      heading_ids[i] = document.getElementById("heading_"+i);
-      console.log(heading_ids[i]);
-      sockets[i] = new WebSocket('ws://localhost:8081');
-      sockets[i].onopen = function() {
-        console.log('Opened connection ');
+    for(let i = 0 ; i < 16 ; i++){
+      sockets[i] = [];
+      for(let j = 0 ; j < 16 ; j++){
+        heading_ids[i][j] = document.getElementById("heading_"+i+"_"+j);
 
-        // send data to the server
-        var json = JSON.stringify({ message: 'Hello' });
-        sockets[i].send(json);
-      }
+        sockets[i][j] = new WebSocket('ws://localhost:8081');
 
-      // When data is received
-      sockets[i].onmessage = function(event) {
-        console.log(JSON.parse(event.data).message);
-        heading_ids[i].style.color = JSON.parse(event.data).message;
-      }
+        sockets[i][j].onopen = function() {
+          console.log('Opened connection ');
 
-      // A connection could not be made
-      sockets[i].onerror = function(event) {
-        console.log(event);
-      }
+          // send data to the server
+          var json = JSON.stringify({ message: 'Hello' });
+          sockets[i][j].send(json);
+        }
 
-      // A connection was closed
-      sockets[i].onclose = function(code, reason) {
-        console.log(code, reason);
+        // When data is received
+        sockets[i][j].onmessage = function(event) {
+          console.log(JSON.parse(event.data).message);
+          heading_ids[i][j].style.color = JSON.parse(event.data).message;
+        }
+
+        // A connection could not be made
+        sockets[i][j].onerror = function(event) {
+          console.log(event);
+        }
+
+        // A connection was closed
+        sockets[i][j].onclose = function(code, reason) {
+          console.log(code, reason);
+        }
       }
     }
   }
@@ -53,5 +60,14 @@
   setHeadingIds();
 
   </script>
+
+
+  <style>
+    .grid-container {
+      display: grid;
+      grid-template-columns:auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+      repeat(var(--colNum), auto);
+    }
+  </style>
 </body>
 </html>

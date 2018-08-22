@@ -1,4 +1,5 @@
 colors = ["white", "black", "red", "green", "blue", "yellow", "orange", "brown", "pink", "maroon"]
+// colors = ["red", "green"]
 var WSS = require('ws').Server;
 
 // Start the server
